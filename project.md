@@ -45,30 +45,38 @@ Finally, since many of the columns were categorical data, I used the pandas meth
 df=pd.get_dummies(df,drop_first=True)
 ```
 ## Initial Observations
+To get a better idea of if this dataset would work for a machine learning model, I made some plots to examine the relationship between a few of the features and the target (predicting patient survival):
 
 The description for this dataset notes that daily activity level and low number of comorbidites(other diseases also present in the patient) are correlated with higher survival rates. To investigate this, I made some plots to compare the proportion of patients that do not survive by their activity level or number of comorbidities.
 
 ![](assets/IMG/Comorbidities.png)
 *Figure 1: Each column represents a number of comorbidites and the value of the column represents the proportion of people with that number of comorbidities that died within 6 months of the conclusion of the study.*
 
-Notice that of the patients with 0 comorbidities, about 49% of them died within 6 months. However, the rates of death for the other numbers of comorbidities were fairly similar, albeit higher. Both of the people who had 8 comorbidities died, so the rate of death for patients with 8 comorbidities is 100%. This matches our expectation that patients with more comorbidities do not survive as long.
+Notice that of the patients with 0 comorbidities, about 49% of them died within 6 months. However, the rates of death for the other numbers of comorbidities were fairly similar, albeit higher. This suggests that having any comorbidities makes you more likely to pass away soon. Both of the people who had 8 comorbidities died, so the rate of death for patients with 8 comorbidities is 100%. This matches our expectation that patients with more comorbidities do not survive as long.
 
 The next graph compares the rates of death based on Actvities of Daily Life.
 
 ![](assets/IMG/ADL.png)
 *Figure 2: Each column represents a range of ADL corresponding to the value on the x axis. Higher ADL suggests a more active lifestyle.The value of the column represents the proportion of people in that range of ADL that died within 6 months of the conclusion of the study.
 
-Here, we notice that it seems like more active people are less likely to survive. This is counter-intuitive because we expect that more active people would be on average healthier. I believe that this discrepancy is because people who are more active are less likely to even be included in the study, making those that have both an active lifestyle
+![](assets/IMG/ADL.png)
+*Figure 3: Each column represents a range of ADL corresponding to the value on the x axis. Higher ADL suggests a more active lifestyle.The value of the column represents the total number of people in that range of ADL that died within 6 months of the conclusion of the study.
 
+In Figure 2, we notice that it seems like more active people are less likely to survive. This is counter-intuitive because we expect that more active people would be on average healthier. I believe that this discrepancy is because people who are more active are less likely to have a severe illness in the first place, which means that they wouldn't even be included in the study. This is supported by how few patients there are with high ADL (Figure 3). Therefore, those that have a higher ADL might be more likely to die within 6 months because their illnesses have to be worse to affect them to the same degree as their peers who have less active lifestyles.
+
+Finally, I compared the 2 month and 6 month estimates from doctors and the SUPPORT model to the target. The 
+
+![](assets/IMG/2m.png)
+*Figure 4: Doctor and SUPPORT model probabilities for survival after 2 months compared with whether or not the patient survived after 6 months. *
+
+![](assets/IMG/6m.png)
+*Figure 5: Doctor and SUPPORT model probabilities for survival after 6 months compared with whether or not the patient survived after 6 months. *
 
 
 Here is an overview of the dataset, how it was obtained and the preprocessing steps taken, with some plots!
 
 
 
-![](assets/IMG/2m.png)
-
-![](assets/IMG/6m.png)
 
 *Figure 1: Here is a caption for my diagram. This one shows a pengiun [1].*
 
