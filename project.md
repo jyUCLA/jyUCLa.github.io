@@ -77,20 +77,61 @@ Finally, I compared the 2 month and 6 month estimates from doctors and the SUPPO
 
 *Figure 5: Doctor and SUPPORT model probabilities for survival after 6 months compared with whether or not the patient survived after 6 months.*
 
-From Figure 5 and Figure 6, we see that the estimates from doctors and the SUPPORT model correlate loosely to the survival of a patient, which we expect, because the numbers are the estimated percent of survival after the specified number of months. I will be comparing the accuracy of a model created using just these estimates to one that uses as many features as possible. 
+From Figure 4 and Figure 5, we see that the estimates from doctors and the SUPPORT model correlate loosely to the survival of a patient, which we expect, because the numbers are the estimated percent of survival after the specified number of months. I will be comparing the accuracy of a model created using just these estimates to one that uses as many features as possible. 
 
 ## Modeling
 
-Given that we are predicting a discrete value (1 or 0 for 'died within 6 months' and 'survived'), and we were able to convert the categorical data into numerical data, is appropriate to use a support vector classifier (I tested both linear and non-linear classifiers) or Random Forest Classifier. Each of these are appropriate for this problem because they are able to take many features and produce a model that can predict values of 1 and 0. In particular, both of these methods offer support vector classifiers offer ways to create decision boundaries that allow for non-linear relationships between the features and the target.
+Given that we are predicting a discrete value (1 or 0 for 'died within 6 months' and 'survived'), and we were able to convert the categorical data into numerical data, is appropriate to use a support vector classifier(SVC) (I tested both linear and non-linear classifiers), logistic regressor, or random forest classifier. Each of these are appropriate for this problem because they are able to take many features and produce a model that can predict values of 1 and 0. In particular, the nonlinear SVCs and random forest classifier are able to create decision boundaries that allow for non-linear relationships between the features and the target. This is important because the factors that determine people's health aren't always linear. For example, a blood pressure that is too high or too low both lead to poor health.
 
 Because there are so many samples (7237), I chose to use a test-train split of 20% test and 80% training data with 5-fold cross-validation. This helps prevent overfitting and leads to a model that performs better when asked to make a prediction on new data. Additionally, I applied the standard scaler to the support vector models because many of the features use units unique to that quantity, especially for the vital signs. For the Random Forest Regressor, normalization is not necessary, so that step was skipped.
 
-I tested each classifier and got the following results
-and they performed similarly, which makes sense because in some cases these two models can be the same. However, the logisitic regressor always produced a warning that the solver failed to converge. Due to this, we will proceed with just the LinearSVC. I will also be using this model on the features that list the SUPPORT model and doctors' estimate on how likely a patient is to survive in the next 6 months. To ensure that each of these LinearSVCs(the one with all features, only doctor estimates, and only SUPPORT model estimates) is trained on the same set of patients, I fixed the random state for the test-train-split and K-fold validation.
+I tested each classifier and foundt they all performed similarly when trained on the data with as many features as possible, which makes sense because in some cases, such as logistic regressor and LinearSVC, the two models can be the same. 
+
+| Model        | RMSE    | Accuracy |
+| :----------- | :-----: | :------: |
+| LinearSVC    | 0.45525 | 0.76934  |
+| RBF SVC      | 0.45809 | 0.75829  |
+| Logit        | 0.45335 | 0.75829  |
+| RFC          | 0.46557 | 0.75829  |
+
+Because the LinearSVC trains relatively quickly and had a slightly better accuracy, I will proceed with just the LinearSVC model. I will also be using this model on the features that list the SUPPORT model and doctors' estimates on how likely a patient is to survive in the next 6 months. To ensure that each of these LinearSVCs(the one with as many features as possible, only doctor estimates, and only SUPPORT model estimates) is trained on the same set of patients, I fixed the random state for the test-train-split and K-fold validation.
+
+ ```python
+X=df.drop(columns=['death']) #overall features
+y=df['death'] #target, stays the same for all models
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=r) #r is fixed for repeatability
+
+X1_train=X_train.drop(columns=['prg2m','prg6m','surv2m','surv6m']) #for creating the model with as many features as possible
+X2_train=X_train[['surv6m']] #features for testing against SUPPORT model
+X3_train=X_train[['prg6m']] #features for testing against Doctors' estimates
+
+X1_test=X_test.drop(columns=['prg2m','prg6m','surv2m','surv6m'])
+X2_test=X_test[['surv6m']]
+X3_test=X_test[['prg6m']]
+```
 
 ## Results
 
-With the LinearSVC trained on as many features as possible, I achieved an accuracy of 
+With the LinearSVC trained on as many features as possible (excluding Support model and Doctors' estimates), I achieved a test accuracy of 76.934%. I will refer to this model as the "All Features SVC". The Support model and Doctors' estimates, when used to train their own Linear SVCs, achieved test accuracies of 71.616% and 72.928%, respectively. I will refer to these as the "Support Model SVC" and "Doctor SVC", respectively as well.
+
+| Features Used                | RMSE    | Accuracy |
+| :----------------------------| :-----: | :------: |
+| As many as possible          | 0.45525 | 0.76934  |
+| Support Model Estimates      | 0.45809 | 0.75829  |
+| Doctor Estimates             | 0.45335 | 0.75829  |
+
+![](assets/IMG/2m.png)
+
+
+
+
+Due to there being about 40 features in the All Features SVC, I decided to investigate which features are the most important and compare this model to one that only uses the most significant features.
+
+
+
+
+
 
 
 Figure X shows... [description of Figure X].
