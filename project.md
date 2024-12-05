@@ -91,8 +91,8 @@ I tested each classifier and foundt they all performed similarly when trained on
 | :----------- | :-----: | :------: |
 | LinearSVC    | 0.45525 | 0.76934  |
 | RBF SVC      | 0.45809 | 0.75829  |
-| Logit        | 0.45335 | 0.75829  |
-| RFC          | 0.46557 | 0.75829  |
+| Logit        | 0.45335 | 0.76934  |
+| RFC          | 0.45240 | 0.76588  |
 
 Because the LinearSVC trains relatively quickly and had a slightly better accuracy, I will proceed with just the LinearSVC model. I will also be using this model on the features that list the SUPPORT model and doctors' estimates on how likely a patient is to survive in the next 6 months. To ensure that each of these LinearSVCs(the one with as many features as possible, only doctor estimates, and only SUPPORT model estimates) is trained on the same set of patients, I fixed the random state for the test-train-split and K-fold validation.
 
@@ -115,11 +115,11 @@ X3_test=X_test[['prg6m']]
 
 With the LinearSVC trained on as many features as possible (excluding Support model and Doctors' estimates), I achieved a test accuracy of 76.934%. I will refer to this model as the "All Features SVC". The Support model and Doctors' estimates, when used to train their own Linear SVCs, achieved test accuracies of 71.616% and 72.928%, respectively. I will refer to these as the "Support Model SVC" and "Doctor SVC", respectively as well.
 
-| Features Used                | RMSE    | Accuracy |
-| :----------------------------| :-----: | :------: |
-| As many as possible          | 0.45525 | 0.76934  |
-| Support Model Estimates      | 0.45809 | 0.75829  |
-| Doctor Estimates             | 0.45335 | 0.75829  |
+| Features Used                | RMSE    | Accuracy    |
+| :----------------------------| :-----: | :---------: |
+| As many as possible          | 0.45525 | 0.76933701  |
+| Support Model Estimates      | 0.52238 | 0.71616022  |
+| Doctor Estimates             | 0.53000 | 0.72928176  |
 
 ![](assets/IMG/ConfusionMatrix.png)
 
@@ -131,31 +131,40 @@ Plotting the confusion matrix, we see that we have a slightly higher rate of fal
 
 *Figure 7: Graph of the most signficant features from the All Features SVC. Bars with the same color or that have a label inside the bar indicates that the feature originally came from the categorical feature indicated by the label in the bar before being converted into dummy variables.*
 
-From the graph of the most significant features, we see that the most important features are the disease group, DNR status, presence of cancer, age, and average cost 
+From the graph of the most significant features, we see that the most important features are the disease group, DNR status, presence of cancer, age, and average cost of ICU treatments. From these, I created two more LinearSVC models, one that uses *only* the top 10 features, and one that uses the top 10 features and any features that came from their original category. 
 
+| Features Used                         | RMSE    | Accuracy    |
+| :-------------------------------------| :-----: | :---------: |
+| Top 10 only                           | 0.48643 | 0.73342541  |
+| Top 10 and most signficant categories | 0.47928 | 0.74240331  |
+| As many as possible                   | 0.45525 | 0.76933701  |
+| Support Model Estimates               | 0.52238 | 0.71616022  |
+| Doctor Estimates                      | 0.53000 | 0.72928176  |
 
+Compared to the model that uses as many features as possible, the model with only the top 10 features is about 3.59% less accurate and the model that uses the top 10 features and any features that came from their original category is about 2.69% less accurate.
 
+![](assets/IMG/ROCcurve.png)
+*Figure 8: The ROC curve for each of the Linear SVCs using the indicated features. Using only the top 10 features does not significantly reduce the model's accuracy.*
 
-
-
-
-
-
-Figure X shows... [description of Figure X].
+From the ROC curves and Accuracy measurements, it is clear that while the model that predicts most accurately is the one that uses all available features, it is sufficient to consider the main categories of disease group, DNR status, presence of cancer, age, and average cost of ICU treatments. Additionally, the ROC curve supports the observation that using only the most signficant features still yields better results than the SUPPORT Model SVC and Doctor SVC.
 
 ## Discussion
 
-From Figure X, one can see that... [interpretation of Figure X].
+Despite testing various models, none of them achieved particularly high accuracy. Even though the LinearSVC that used as many features as possible was more accurate, it only about 5% more accurate than predicting based on doctors' and the SUPPORT Model's estimates. Thankfully, this means that we can still trust doctors to provide decent estimates of 6 month survival rates. Additionally, becuase this difference is so small, I do not believe that using a LinearSVC, as I have done here, will prove to be any more effective than current methods of predicting patient survival will be.
+
+I believe that one of the reasons the tested models did not produce better results is that the target data is simple binary classification. As a result, each of the model's methods converged on similar features and numbers, producing models with nearly identical accuracy. I believe that the accuracy was also hindered by considering every type of disease. it is possible that limiting the dataset to patients with a specific disease will produce more accurate results. In addition, this data was originally collected in the 1990s, so I believe that with the improvements to technology today, we would see a higher percentage of patients surviving than as indicated from this model. Furthermore, this data was collected from a study that took special care to attempt to facilitate better patient-doctor communication, so survival rates in a real-world applications of this model could be lower than predicted.
+
+One surprising result is that features associated with higher survival, those being a lack of comorbidities and higher activity levels, were not significant features in the All Features model. This supports the initial observation that the nubmer of comorbidities is not very relevant to survival unless the patient has 0 comorbidities, in which case they would have a slightly better chance of survival. Similarly, there are few patients with high daily activity levels, so that feature becomes less significant in the model.
+
+Another interesting observation is that race is a significant factor in predicting patient survival. This is reflective of the racial inequality in healtcare between white and non-white populations in the U.s.
 
 ## Conclusion
 
-Here is a brief summary. From this work, the following conclusions can be made:
-* first conclusion
-* second conclusion
-
-Here is how this work could be developed further in a future project.
-
-
+Based on an analysis of the accuracy of various models to predict patient survival within 6 months, we conclude that
+* race, presence of cancer, age, and type of disease are some of the most significant factors affecting patient survival.
+* LinearSVC and similar classifiers for binary classification do not perform much better than existing models, specifically the SUPPORT Model developed alongside this dataset.
+  
+In the future, the results of this LinearSVC model can be compared to those of a to a neural net. In addition, developing a model to predict survival that is usable by patients, that is, only uses features that patients would have reasable access to measuring, such as weight, age, and presence of specific diseases, could be helpful for assisting in end-of-life decision making or encouraging patients to reach out to their doctor.
 
 ## References
 
@@ -164,6 +173,7 @@ Here is how this work could be developed further in a future project.
 [^2]: [A. F. Connors, et.al, “A Controlled Trial to Improve Care for Seriously III Hospitalized Patients,” JAMA, vol. 274, no. 20, p. 1591, Nov. 1995, doi: https://doi.org/10.1001/jama.1995.03530200027032.] (https://jamanetwork.com/journals/jama/article-abstract/391724)
 
 [^3]: [F. Harrel, “SUPPORT2,” UCI Machine Learning Repository, Sep. 14, 2023. https://archive.ics.uci.edu/dataset/880/support2](https://archive.ics.uci.edu/dataset/880/support2)
+
 [^4]: [SandhyaKrishnan02, “Multicollinearity, how to handle it to avoid dummy variable trap?,” www.kaggle.com, Jan. 2021. https://www.kaggle.com/discussions/general/294096](https://www.kaggle.com/discussions/general/294096)
 [back](./)
 
