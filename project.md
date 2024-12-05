@@ -129,7 +129,9 @@ Plotting the confusion matrix, we see that we have a slightly higher rate of fal
 
 ![](assets/IMG/Significance.png)
 
-*Figure 7: Graph of the most signficant features from the All Features SVC. Bars with the same color or that have a label of the form "Category: Has/Is ___" indicate that those features originally came from a categorical feature before being converted into multiple columns of booleans.* 
+*Figure 7: Graph of the most signficant features from the All Features SVC. Bars with the same color or that have a label inside the bar indicates that the feature originally came from the categorical feature indicated by the label in the bar before being converted into dummy variables.*
+
+From the graph of the most significant features, we see that the most important features are the disease group, DNR status, presence of cancer, age, and average cost 
 
 
 
