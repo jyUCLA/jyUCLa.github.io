@@ -121,12 +121,18 @@ With the LinearSVC trained on as many features as possible (excluding Support mo
 | Support Model Estimates      | 0.45809 | 0.75829  |
 | Doctor Estimates             | 0.45335 | 0.75829  |
 
-![](assets/IMG/2m.png)
+![](assets/IMG/ConfusionMatrix.png)
 
+*Figure 6: Confusion Matrix for the All Features SVC*
 
+Plotting the confusion matrix, we see that we have a slightly higher rate of false positives(190) than false negatives(144).
 
+Due to there being about 40 features in the All Features SVC, I decided to investigate which features are the most important and compare this model to one that only uses the most significant features. Below is a plot of the top 10 features and their coefficient from the model.
 
-Due to there being about 40 features in the All Features SVC, I decided to investigate which features are the most important and compare this model to one that only uses the most significant features.
+![](assets/IMG/Signficance.png)
+
+*Figure 7: 
+
 
 
 
