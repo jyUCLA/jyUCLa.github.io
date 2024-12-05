@@ -1,5 +1,3 @@
-# Predicting Survival for Patients with Severe Illness
-
 I applied machine learning techniques clinical data from patients with severe illnesses to predict whether or not they will pass away in the next 6 months. 
 
 ## Introduction 
