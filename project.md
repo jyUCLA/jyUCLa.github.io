@@ -46,14 +46,17 @@ df=pd.get_dummies(df,drop_first=True)
 ```
 ## Initial Observations
 
-The description for this dataset notes that daily activity level and low number of comorbidites(other diseases also present in the patient) are correlated with higher survival rates. 
-
-
-
+The description for this dataset notes that daily activity level and low number of comorbidites(other diseases also present in the patient) are correlated with higher survival rates.
 
 Here is an overview of the dataset, how it was obtained and the preprocessing steps taken, with some plots!
 
-![](assets/IMG/datapenguin.png){: width="500" }
+![](assets/IMG/Comorbidities.png)
+
+![](assets/IMG/ADL.png)
+
+![](assets/IMG/2m.png)
+
+![](assets/IMG/6m.png)
 
 *Figure 1: Here is a caption for my diagram. This one shows a pengiun [1].*
 
