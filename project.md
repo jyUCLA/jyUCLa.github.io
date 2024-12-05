@@ -1,5 +1,3 @@
-
-
 ## Predicting Survival for Patients with Severe Illness
 
 I applied machine learning techniques clinical data from patients with severe illnesses to predict whether or not they will pass away in the next 6 months. 
@@ -49,15 +47,14 @@ To get a better idea of if this dataset would work for a machine learning model,
 
 The description for this dataset notes that daily activity level and low number of comorbidites(other diseases also present in the patient) are correlated with higher survival rates. To investigate this, I made some plots to compare the proportion of patients that do not survive by their activity level or number of comorbidities.
 
-![](assets/IMG/Comorbidities.png)
+![](assets/IMG/Comorbidities.png) 
 *Figure 1: Each column represents a number of comorbidites and the value of the column represents the proportion of people with that number of comorbidities that died within 6 months of the conclusion of the study.*
 
 Notice that of the patients with 0 comorbidities, about 49% of them died within 6 months. However, the rates of death for the other numbers of comorbidities were fairly similar, albeit higher. This suggests that having any comorbidities makes you more likely to pass away soon. Both of the people who had 8 comorbidities died, so the rate of death for patients with 8 comorbidities is 100%. This matches our expectation that patients with more comorbidities do not survive as long.
 
 The next graph compares the rates of death based on Actvities of Daily Life.
 
-![](assets/IMG/ADL.png)
-*Figure 2: Each column represents a range of ADL corresponding to the value on the x axis. Higher ADL suggests a more active lifestyle.The value of the column represents the proportion of people in that range of ADL that died within 6 months of the conclusion of the study.*
+![*Figure 2: Each column represents a range of ADL corresponding to the value on the x axis. Higher ADL suggests a more active lifestyle.The value of the column represents the proportion of people in that range of ADL that died within 6 months of the conclusion of the study.*](assets/IMG/ADL.png)
 
 ![](assets/IMG/ADL.png)
 *Figure 3: Each column represents a range of ADL corresponding to the value on the x axis. Higher ADL suggests a more active lifestyle.The value of the column represents the total number of people in that range of ADL that died within 6 months of the conclusion of the study.*
