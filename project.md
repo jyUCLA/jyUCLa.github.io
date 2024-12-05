@@ -42,21 +42,27 @@ Finally, since many of the columns were categorical data, I used the pandas meth
 ```python
 df=pd.get_dummies(df,drop_first=True)
 ```
+After dropping any rows with missing data, we were left with 7237 samples.
+
 ## Initial Observations
 To get a better idea of if this dataset would work for a machine learning model, I made some plots to examine the relationship between a few of the features and the target (predicting patient survival):
 
 The description for this dataset notes that daily activity level and low number of comorbidites(other diseases also present in the patient) are correlated with higher survival rates. To investigate this, I made some plots to compare the proportion of patients that do not survive by their activity level or number of comorbidities.
 
 ![](assets/IMG/Comorbidities.png) 
+
 *Figure 1: Each column represents a number of comorbidites and the value of the column represents the proportion of people with that number of comorbidities that died within 6 months of the conclusion of the study.*
 
 Notice that of the patients with 0 comorbidities, about 49% of them died within 6 months. However, the rates of death for the other numbers of comorbidities were fairly similar, albeit higher. This suggests that having any comorbidities makes you more likely to pass away soon. Both of the people who had 8 comorbidities died, so the rate of death for patients with 8 comorbidities is 100%. This matches our expectation that patients with more comorbidities do not survive as long.
 
 The next graph compares the rates of death based on Actvities of Daily Life.
 
-![*Figure 2: Each column represents a range of ADL corresponding to the value on the x axis. Higher ADL suggests a more active lifestyle.The value of the column represents the proportion of people in that range of ADL that died within 6 months of the conclusion of the study.*](assets/IMG/ADL.png)
+![](assets/IMG/ADL.png)
+
+*Figure 2: Each column represents a range of ADL corresponding to the value on the x axis. Higher ADL suggests a more active lifestyle.The value of the column represents the proportion of people in that range of ADL that died within 6 months of the conclusion of the study.*
 
 ![](assets/IMG/ADL.png)
+
 *Figure 3: Each column represents a range of ADL corresponding to the value on the x axis. Higher ADL suggests a more active lifestyle.The value of the column represents the total number of people in that range of ADL that died within 6 months of the conclusion of the study.*
 
 In Figure 2, we notice that it seems like more active people are less likely to survive. This is counter-intuitive because we expect that more active people would be on average healthier. I believe that this discrepancy is because people who are more active are less likely to have a severe illness in the first place, which means that they wouldn't even be included in the study. This is supported by how few patients there are with high ADL (Figure 3). Therefore, those that have a higher ADL might be more likely to die within 6 months because their illnesses have to be worse to affect them to the same degree as their peers who have less active lifestyles.
@@ -64,38 +70,28 @@ In Figure 2, we notice that it seems like more active people are less likely to 
 Finally, I compared the 2 month and 6 month estimates from doctors and the SUPPORT model to the target. The 
 
 ![](assets/IMG/2m.png)
+
 *Figure 4: Doctor and SUPPORT model probabilities for survival after 2 months compared with whether or not the patient survived after 6 months.*
 
 ![](assets/IMG/6m.png)
+
 *Figure 5: Doctor and SUPPORT model probabilities for survival after 6 months compared with whether or not the patient survived after 6 months.*
 
+From Figure 5 and Figure 6, we see that the estimates from doctors and the SUPPORT model correlate loosely to the survival of a patient, which we expect, because the numbers are the estimated percent of survival after the specified number of months. I will be comparing the accuracy of a model created using just these estimates to one that uses as many features as possible. 
 
-Here is an overview of the dataset, how it was obtained and the preprocessing steps taken, with some plots!
+## Modeling
 
+Given that we are predicting a discrete value (1 or 0 for 'died within 6 months' and 'survived'), and we were able to convert the categorical data into numerical data, is appropriate to use a support vector classifier (I tested both linear and non-linear classifiers) or Random Forest Classifier. Each of these are appropriate for this problem because they are able to take many features and produce a model that can predict values of 1 and 0. In particular, both of these methods offer support vector classifiers offer ways to create decision boundaries that allow for non-linear relationships between the features and the target.
 
+Because there are so many samples (7237), I chose to use a test-train split of 20% test and 80% training data with 5-fold cross-validation. This helps prevent overfitting and leads to a model that performs better when asked to make a prediction on new data. Additionally, I applied the standard scaler to the support vector models because many of the features use units unique to that quantity, especially for the vital signs. For the Random Forest Regressor, normalization is not necessary, so that step was skipped.
 
-
-*Figure 1: Here is a caption for my diagram. This one shows a pengiun [1].*
-
-## Modelling
-
-
-Here are some more details about the machine learning approach, and why this was deemed appropriate for the dataset. 
-
-The model might involve optimizing some quantity. You can include snippets of code if it is helpful to explain things.
-
-```python
-from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.datasets import make_classification
-X, y = make_classification(n_features=4, random_state=0)
-clf = ExtraTreesClassifier(n_estimators=100, random_state=0)
-clf.fit(X, y)
-clf.predict([[0, 0, 0, 0]])
-```
-
-This is how the method was developed.
+I tested each classifier and got the following results
+and they performed similarly, which makes sense because in some cases these two models can be the same. However, the logisitic regressor always produced a warning that the solver failed to converge. Due to this, we will proceed with just the LinearSVC. I will also be using this model on the features that list the SUPPORT model and doctors' estimate on how likely a patient is to survive in the next 6 months. To ensure that each of these LinearSVCs(the one with all features, only doctor estimates, and only SUPPORT model estimates) is trained on the same set of patients, I fixed the random state for the test-train-split and K-fold validation.
 
 ## Results
+
+With the LinearSVC trained on as many features as possible, I achieved an accuracy of 
+
 
 Figure X shows... [description of Figure X].
 
@@ -110,6 +106,8 @@ Here is a brief summary. From this work, the following conclusions can be made:
 * second conclusion
 
 Here is how this work could be developed further in a future project.
+
+
 
 ## References
 
